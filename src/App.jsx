@@ -1,5 +1,7 @@
 import DTITracker from "./DTITracker";
 
-export default function App() {
+function App() {
   return <DTITracker />;
 }
+
+export default App;
