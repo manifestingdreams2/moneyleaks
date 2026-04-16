@@ -5,19 +5,27 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis
 // PERSISTENCE
 // ─────────────────────────────────────────────────────────────────────────────
 function useLocalStorage(key, initial) {
-  const [value, setValue] = useState(() => {
-    try { const s = localStorage.getItem(key); return s ? JSON.parse(s) : initial; }
-    catch { return initial; }
-  });
-  const set = useCallback((v) => {
-    setValue(prev => {
-      const next = typeof v === "function" ? v(prev) : v;
-      try { localStorage.setItem(key, JSON.stringify(next)); } catch {}
-      return next;
+    const [value, setValue] = useState(() => {
+      try {
+        const stored = localStorage.getItem(key);
+        return stored ? JSON.parse(stored) : initial;
+      } catch {
+        return initial;
+      }
     });
-  }, [key]);
-  return [value, set];
-}
+  
+    const set = (newValue) => {
+      setValue((prev) => {
+        const valueToStore =
+          typeof newValue === "function" ? newValue(prev) : newValue;
+  
+        localStorage.setItem(key, JSON.stringify(valueToStore));
+        return valueToStore;
+      });
+    };
+  
+    return [value, set];
+  }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // INITIAL DATA
